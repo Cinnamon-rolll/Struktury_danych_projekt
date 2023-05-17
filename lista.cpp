@@ -7,28 +7,6 @@ class Element
   public:              //class domyslnie wszystko jest private
   Element * nastepny;  //wskaznik na nastepny element
   int wartosc;         // wartosc ktora chcemy zapisac
-
-
-
-
-
-
-
-
-
-
-
-
-
-  int wystapienia;     // ilosc wyszukiwan
-
-
-
-
-
-
-
-
 };
 
 // deklaracja listy
@@ -174,21 +152,6 @@ class Lista
       }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // przesuwa element na początek i zwraca jego adres
     Element * na_poczatek(Element * przesuwany)  //wybrany element  
     {
@@ -208,29 +171,6 @@ class Lista
         return adres;                          //zwraca adres przesunietego elementu
       }
     } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
 
 //////////// Menu /////////////
