@@ -167,7 +167,7 @@ class Lista
         if(!(adres->nastepny))                   //czy nowy adres jest ostatnim elementem
         koniec = adres;                          //zapisuje adres jako koniec
         licznik--;                               //zmniejszamy liczbe elementow o 1
-        dodaj_poczatek(przesuwany);
+        dodaj_poczatek(przesuwany);             //dodaje element na poczatek 
         return adres;                          //zwraca adres przesunietego elementu
       }
     } 
