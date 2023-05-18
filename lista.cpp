@@ -7,6 +7,7 @@ class Element
   public:              //class domyslnie wszystko jest private
   Element * nastepny;  //wskaznik na nastepny element
   int wartosc;         // wartosc ktora chcemy zapisac
+  int wystapienia;     // ilosc wyszukiwan
 };
 
 // deklaracja listy
@@ -167,7 +168,7 @@ class Lista
         if(!(adres->nastepny))                   //czy nowy adres jest ostatnim elementem
         koniec = adres;                          //zapisuje adres jako koniec
         licznik--;                               //zmniejszamy liczbe elementow o 1
-        dodaj_poczatek(przesuwany);             //dodaje element na poczatek 
+        dodaj_poczatek(przesuwany);             
         return adres;                          //zwraca adres przesunietego elementu
       }
     } 
@@ -278,9 +279,17 @@ case 7:
 // wyszukujemy element z listy
 cout<<endl<<"Ktory element z listy chcesz wyszukac"<<endl;
 cin>>ktory;
- lista1.na_poczatek(lista1.miejsce(ktory));
-  
+if(ktory>lista1.licznik)
+{
+  cout<<endl<<"Nie ma takiego elementu na liscie"<<endl<<"Na liscie znajduje sie "<<lista1.licznik<<" elementow, zobacz dostepne opcje na liscie: "<<endl<<endl;
+  cout<<"Lista: ";
+  lista1.wyswietl();
+}
+else
+{
+  lista1.na_poczatek(lista1.miejsce(ktory));
   cout << "Lista:  ";   lista1.wyswietl();
+}
   cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
     menu(lista1, p, i);
   break;
