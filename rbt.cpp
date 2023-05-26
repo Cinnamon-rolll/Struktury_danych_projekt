@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 int Red_Black_Tree::max_depth(Node* node)
 {
 	if (node == nill)
@@ -16,9 +15,13 @@ int Red_Black_Tree::max_depth(Node* node)
 		int right_depth = max_depth(node->right);
 
 		if (right_depth < left_depth)
+		{
 			return (left_depth + 1);
+		}
 		else
+		{
 			return (right_depth + 1);
+		}
 	}
 }
 
@@ -38,6 +41,49 @@ void Red_Black_Tree::temp_init(Node*& temp, int dane)
 	temp->right = nill;
 	temp->data = dane;
 	temp->color = BLACK;
+}
+
+void Red_Black_Tree::print_elements(Node* node, Node* nil)
+{
+	if (node != nil)
+	{
+		print_elements(node->left, nil);
+		cout << node->data << " " << node->color << endl;
+		print_elements(node->right, nil);
+	}
+}
+
+Node* Red_Black_Tree::successor_init(Node*& node)
+{
+	while (node->left != nill)
+	{
+		node = node->left;
+	}
+	return node;
+}
+
+void Red_Black_Tree::deletion_driver(Node* node, int dane)
+{
+	while (node != nill && dane != node->data) 
+	{
+		if (dane < node->data)
+		{
+			node = node->left;
+		}
+		else
+		{
+			node = node->right;
+		}
+	}
+	if (node->data == dane)
+	{
+		delete_node(node, node, node);
+		cout << "Usunieto! " << "\n";
+	}
+	else
+	{
+		cout << "Nie ma w drzewie wezla o danej wartosci!" << "\n";
+	}
 }
 
 void Red_Black_Tree::rotate_left(Node*node_x)
@@ -126,6 +172,26 @@ void Red_Black_Tree::insert(struct Node* x, struct Node* y, struct Node* node)
 	insertion_fix_up(node);   
 }
 
+bool Red_Black_Tree::insert_check(Node* node, int dane)
+{
+	while (node != nill && dane != node->data) {
+		if (dane < node->data)
+		{
+			node = node->left;
+		}
+		else
+		{
+			node = node->right;
+		}
+	}
+	if (node->data == dane)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void Red_Black_Tree::insertion_fix_up(Node*&node)
 {
 	cout << "ODPALIL" << "\n";
@@ -181,7 +247,166 @@ void Red_Black_Tree::insertion_fix_up(Node*&node)
 
 }
 
-void Red_Black_Tree::tree_print(struct Node* node, struct Node* nill)
+void Red_Black_Tree::delete_node(struct Node* node, struct Node* x, struct Node* y)
+{
+	int org_color = 0;
+	org_color = y->color;
+	if (node->left == nill) //jezeli node nie ma lewego dziecka
+	{
+		x = node->right;
+		if (node->parent == nill)
+		{
+			root = node->right;
+		}
+		else if(node == node->parent->left)
+		{
+			node->parent->left = node->right;
+		}
+		else
+		{
+			node->parent->right = node->right;
+		}
+		node->right->parent = node->parent;
+	}
+	else if (node->right = nill)
+	{
+		x = node->left;
+		if (node->parent == nill)
+		{
+			root = node->left;
+		}
+		else if (node == node->parent->left)
+		{
+			node->parent->left = node->left;
+		}
+		else
+		{
+			node->parent->right = node->left;
+		}
+		node->left->parent = node->parent;
+	}
+	else //jezeli node ma dwoje dzieci
+	{
+		y = successor_init(node->right); //nastepca
+		org_color = y->color;
+		x = y->right;
+		if (y->parent == node)
+		{
+			x->parent = y;
+		}
+		else
+		{
+			if (y->parent == nill)
+			{
+				root = y->right;
+			}
+			else if (y == y->parent->left)
+			{
+				y->parent->left = y->right;
+			}
+			else
+			{
+				y->parent->right = y->right;
+			}
+			y->right->parent = y->parent;
+			y->right = node->right;
+			y->right->parent = y;
+		}
+		if (node->parent == nill)
+		{
+			root = y;
+		}
+		else if (node == node->parent->left)
+		{
+			node->parent->left = y;
+		}
+		else
+		{
+			node->parent->right = y;
+		}
+		y->parent = node->parent;
+		y->left = node->left;
+		y->left->parent = y;
+		y->color = node->color;
+	}
+	if (org_color == BLACK)
+	{
+		deletion_fix_up(x, x);
+	}
+	delete node;
+}
+
+	
+void Red_Black_Tree::deletion_fix_up(struct Node* x, struct Node* y)
+{
+	while (x != root && x->color == BLACK) 
+	{
+		if (x == x->parent->left) //x left kid
+		{
+			y = x->parent->right; //sibling
+			if (y->color == RED) //case 1
+			{
+				y->color = BLACK;
+				x->parent->color = RED;
+				rotate_left(x->parent);
+				y = x->parent->right;
+			}
+			else if (y->left->color == BLACK && y->right->color == BLACK) //case 2
+			{
+				y->color = RED;
+				x = x->parent;
+			}
+			else if (y->right->color == BLACK) //case 3
+			{
+				y->left->color = BLACK;
+				y->color = RED;
+				rotate_right(y);
+				y = x->parent->right;
+			}
+			else //case 4
+			{
+				y->color = x->parent->color;
+				x->parent->color = BLACK;
+				y->right->color = BLACK;
+				rotate_left(x->parent);
+				x = root;
+			}
+		}
+		else // x right kid analogicznie
+		{
+			y = x->parent->left;
+			if (y->color == RED) //case 1
+			{
+				y->color = BLACK;
+				x->parent->color = RED;
+				rotate_right(x->parent);
+				y = x->parent->left;
+			}
+			else if (y->right->color == BLACK && y->left->color == BLACK) //case 2
+			{
+				y->color = RED;
+				x = x->parent;
+			}
+			else if (y->left->color == BLACK) //case 3
+			{
+				y->right->color = BLACK;
+				y->color = RED;
+				rotate_left(y);
+				y = x->parent->left;
+			}
+			else {
+				y->color = x->parent->color;
+				x->parent->color = BLACK;
+				y->left->color = BLACK;
+				rotate_right(x->parent);
+				x = root;
+			}
+		}
+	}
+	x->color = BLACK;
+}
+
+void Red_Black_Tree::print_tree(struct Node* node, struct Node* nill)
 {
 	if (node != nill) {
 		if (node->right != nill) 
@@ -204,7 +429,7 @@ void Red_Black_Tree::tree_print(struct Node* node, struct Node* nill)
 			{
 				cout << "\033[31m" << node->right->data << "\033[0m" << "\n";
 			}
-			tree_print(node->right, nill);
+			print_tree(node->right, nill);
 		}
 		if (node->left != nill) {
 			if (node->color == BLACK)
@@ -225,7 +450,7 @@ void Red_Black_Tree::tree_print(struct Node* node, struct Node* nill)
 			{
 				cout << "\033[31m" << node->left->data << "\033[0m" << "\n";
 			}
-			tree_print(node->left, nill);
+			print_tree(node->left, nill);
 		}
 	}
 }
@@ -246,7 +471,9 @@ void Red_Black_Tree::menu()
 		cout << "1) Insert node" << "\n";
 		cout << "2) Print tree" << "\n";
 		cout << "3) Tree max depth" << "\n";
-		cout << "4) End " << "\n";
+		cout << "4) Delete node" << "\n";
+		cout << "5) Printing elements stored in the tree in increasing order" << "\n";
+		cout << "6) End " << "\n";
 		cin >> choice;
 		switch (choice)
 		{
@@ -257,15 +484,23 @@ void Red_Black_Tree::menu()
 			cout<<"\n";
 			if ((temp = new Node()) != NULL)
 			{
-				temp_init(temp, dane);
-				insert(root, nill, temp);
+				if (insert_check(root, dane) == false)
+				{
+					temp_init(temp, dane);
+					insert(root, nill, temp);
+				}
+				else
+				{
+					cout << "Wezel przechowujacy liczbe " << dane << " juz istnieje " << "\n";
+					delete temp;
+				}
 			}
 			system("pause");
 			break;
 		case 2: 
 			cout << "\n";
 			cout << "ROOT: " << "\033[90;1m" << root->data << "\033[0m" << "\n";
-			tree_print(root, nill);
+			print_tree(root, nill);
 			cout << "\n";
 			system("pause");
 			break;
@@ -274,8 +509,20 @@ void Red_Black_Tree::menu()
 			cout << max_depth(root) << "\n";
 			system("pause");
 			break;
+		case 4:
+			cout << "\033[95;1mUsuwanie wezla\033[0m" << "\n";
+			cout << "Liczba do usuniecia: ";
+			cin >> dane;
+			deletion_driver(root, dane);
+			system("pause");
+			break;
+		case 5:
+			cout << "\033[95;1mWyswietlanie elementow rosnaco\033[0m" << "\n";
+			print_elements(root, nill);
+			system("pause");
+			break;
 		default:
-			if (choice != 4)
+			if (choice != 6)
 			{
 				cout << "Opcja niezawarta w menu. Sprobuj ponownie" << "\n";
 				system("pause");
@@ -283,6 +530,7 @@ void Red_Black_Tree::menu()
 			}
 			break;
 		}
-	} while (choice != 4);
+	} while (choice != 6);
+
 	return;
 }
