@@ -9,7 +9,7 @@ int Red_Black_Tree::max_depth(Node* node)
 	{
 		return 0;
 	}
-	else 
+	else
 	{
 		int left_depth = max_depth(node->left);
 		int right_depth = max_depth(node->right);
@@ -25,22 +25,24 @@ int Red_Black_Tree::max_depth(Node* node)
 	}
 }
 
-void Red_Black_Tree::nill_init(Node*& nil)
+Node* Red_Black_Tree::nill_init(Node* nil)
 {
 	nil->color = BLACK;
 	nil->left = NULL;
 	nil->right = NULL;
 	nil->parent = NULL;
 	nil->data = 0;
+	return nil;
 }
 
-void Red_Black_Tree::temp_init(Node*& temp, int dane)
+Node* Red_Black_Tree::temp_init(Node* temp, int dane)
 {
 	temp->parent = nill;
 	temp->left = nill;
 	temp->right = nill;
 	temp->data = dane;
 	temp->color = BLACK;
+	return temp;
 }
 
 void Red_Black_Tree::print_elements(Node* node, Node* nil)
@@ -48,12 +50,19 @@ void Red_Black_Tree::print_elements(Node* node, Node* nil)
 	if (node != nil)
 	{
 		print_elements(node->left, nil);
-		cout << node->data << " " << node->color << endl;
+		if (node->color == BLACK)
+		{
+			cout << "\033[90m" << node->data << "\033[0m" << " ";
+		}
+		else if (node->color == RED)
+		{
+			cout << "\033[31m" << node->data << "\033[0m" << " ";
+		}
 		print_elements(node->right, nil);
 	}
 }
 
-Node* Red_Black_Tree::successor_init(Node*& node)
+Node* Red_Black_Tree::successor_init(Node* node)
 {
 	while (node->left != nill)
 	{
@@ -62,31 +71,7 @@ Node* Red_Black_Tree::successor_init(Node*& node)
 	return node;
 }
 
-void Red_Black_Tree::deletion_driver(Node* node, int dane)
-{
-	while (node != nill && dane != node->data) 
-	{
-		if (dane < node->data)
-		{
-			node = node->left;
-		}
-		else
-		{
-			node = node->right;
-		}
-	}
-	if (node->data == dane)
-	{
-		delete_node(node, node, node);
-		cout << "Usunieto! " << "\n";
-	}
-	else
-	{
-		cout << "Nie ma w drzewie wezla o danej wartosci!" << "\n";
-	}
-}
-
-void Red_Black_Tree::rotate_left(Node*node_x)
+void Red_Black_Tree::rotate_left(Node* node_x)
 {
 	Node* node_y;
 	node_y = node_x->right;
@@ -104,7 +89,7 @@ void Red_Black_Tree::rotate_left(Node*node_x)
 	{
 		node_x->parent->left = node_y;
 	}
-	else if(node_x == node_x->parent->right)
+	else if (node_x == node_x->parent->right)
 	{
 		node_x->parent->right = node_y;
 	}
@@ -112,9 +97,9 @@ void Red_Black_Tree::rotate_left(Node*node_x)
 	node_x->parent = node_y;
 }
 
-void Red_Black_Tree::rotate_right(Node*node_y)
+void Red_Black_Tree::rotate_right(Node* node_y)
 {
-	Node* node_x;
+	 Node* node_x;
 	node_x = node_y->left;
 	node_y->left = node_x->right;
 	if (node_x->right != nill)
@@ -138,9 +123,9 @@ void Red_Black_Tree::rotate_right(Node*node_y)
 	node_y->parent = node_x;
 }
 
-void Red_Black_Tree::insert(struct Node* x, struct Node* y, struct Node* node) 
+void Red_Black_Tree::insert( Node* x,  Node* y,  Node* node)
 {
-	while (x != nill) 
+	while (x != nill)
 	{
 		y = x;
 		if (node->data < x->data)
@@ -153,7 +138,7 @@ void Red_Black_Tree::insert(struct Node* x, struct Node* y, struct Node* node)
 		}
 	}
 	node->parent = y;
-	if (y == nill)			
+	if (y == nill)
 	{
 		root = node;
 	}
@@ -161,7 +146,7 @@ void Red_Black_Tree::insert(struct Node* x, struct Node* y, struct Node* node)
 	{
 		y->left = node;
 	}
-	else                     
+	else
 	{
 		y->right = node;
 	}
@@ -169,7 +154,7 @@ void Red_Black_Tree::insert(struct Node* x, struct Node* y, struct Node* node)
 	node->left = nill;
 	node->right = nill;
 	node->color = RED;
-	insertion_fix_up(node);   
+	insertion_fix_up(node);
 }
 
 bool Red_Black_Tree::insert_check(Node* node, int dane)
@@ -192,10 +177,9 @@ bool Red_Black_Tree::insert_check(Node* node, int dane)
 	return false;
 }
 
-void Red_Black_Tree::insertion_fix_up(Node*&node)
+void Red_Black_Tree::insertion_fix_up(Node* node)
 {
-	cout << "ODPALIL" << "\n";
-	struct Node* y;
+	Node* y;
 	while (node->parent->color == RED)
 	{
 		if (node->parent == node->parent->parent->left)
@@ -210,7 +194,7 @@ void Red_Black_Tree::insertion_fix_up(Node*&node)
 			}
 			else
 			{
-				if (node == node->parent->right)
+				if (node == node->parent->right) 
 				{
 					node = node->parent;
 					rotate_left(node);
@@ -220,17 +204,17 @@ void Red_Black_Tree::insertion_fix_up(Node*&node)
 				rotate_right(node->parent->parent);
 			}
 		}
-		else if (node->parent == node->parent->parent->right)
+		else if (node->parent == node->parent->parent->right) 
 		{
 			y = node->parent->parent->left;
-			if (y->color == RED)
+			if (y->color == RED) 
 			{
 				node->parent->color = BLACK;
 				y->color = BLACK;
 				node->parent->parent->color = RED;
 				node = node->parent->parent;
 			}
-			else
+			else 
 			{
 				if (node == node->parent->left)
 				{
@@ -247,88 +231,90 @@ void Red_Black_Tree::insertion_fix_up(Node*&node)
 
 }
 
-void Red_Black_Tree::delete_node(struct Node* node, struct Node* x, struct Node* y)
+void Red_Black_Tree::tree_move(Node* node, Node* child_node) 
 {
-	int org_color = 0;
+	if (node->parent == nill)
+	{
+		root = child_node;
+	}
+	else if (node == node->parent->left)
+	{
+		node->parent->left = child_node;
+	}
+	else
+	{
+		node->parent->right = child_node;
+	}
+	child_node->parent = node->parent;
+}
+
+void Red_Black_Tree::deletion_driver(Node* node, int dane)
+{
+	while (node != nill && dane != node->data)
+	{
+		if (dane < node->data)
+		{
+			node = node->left;
+		}
+		else
+		{
+			node = node->right;
+		}
+	}
+	if (node->data == dane)
+	{
+		delete_node(node, node, node);
+		cout << "Usunieto! " << "\n";
+	}
+	else
+	{
+		cout << "Nie ma w drzewie wezla o danej wartosci!" << "\n";
+	}
+}
+
+void Red_Black_Tree::delete_node(Node* node, Node* y, Node* x)
+{
+	int org_color;
 	org_color = y->color;
-	if (node->left == nill) //jezeli node nie ma lewego dziecka
+
+	if (node->left == nill) 
 	{
 		x = node->right;
 		if (node->parent == nill)
 		{
 			root = node->right;
 		}
-		else if(node == node->parent->left)
+		else if(node==node->parent->left)
 		{
-			node->parent->left = node->right;
 		}
-		else
-		{
-			node->parent->right = node->right;
-		}
-		node->right->parent = node->parent;
+		tree_move(node, node->right);
 	}
-	else if (node->right = nill)
+	else if (node->right == nill) 
 	{
 		x = node->left;
-		if (node->parent == nill)
-		{
-			root = node->left;
-		}
-		else if (node == node->parent->left)
-		{
-			node->parent->left = node->left;
-		}
-		else
-		{
-			node->parent->right = node->left;
-		}
-		node->left->parent = node->parent;
+		tree_move(node, node->left);
 	}
-	else //jezeli node ma dwoje dzieci
+	else 
 	{
-		y = successor_init(node->right); //nastepca
+		y = successor_init(node->right);
 		org_color = y->color;
 		x = y->right;
-		if (y->parent == node)
+		if (y->parent == node) 
 		{
 			x->parent = y;
 		}
-		else
+		else 
 		{
-			if (y->parent == nill)
-			{
-				root = y->right;
-			}
-			else if (y == y->parent->left)
-			{
-				y->parent->left = y->right;
-			}
-			else
-			{
-				y->parent->right = y->right;
-			}
-			y->right->parent = y->parent;
+			tree_move(y, y->right);
 			y->right = node->right;
 			y->right->parent = y;
 		}
-		if (node->parent == nill)
-		{
-			root = y;
-		}
-		else if (node == node->parent->left)
-		{
-			node->parent->left = y;
-		}
-		else
-		{
-			node->parent->right = y;
-		}
-		y->parent = node->parent;
+		tree_move(node, y);
 		y->left = node->left;
 		y->left->parent = y;
 		y->color = node->color;
 	}
+
 	if (org_color == BLACK)
 	{
 		deletion_fix_up(x, x);
@@ -336,10 +322,10 @@ void Red_Black_Tree::delete_node(struct Node* node, struct Node* x, struct Node*
 	delete node;
 }
 
-	
-void Red_Black_Tree::deletion_fix_up(struct Node* x, struct Node* y)
+
+void Red_Black_Tree::deletion_fix_up(Node* x, Node* y)
 {
-	while (x != root && x->color == BLACK) 
+	while (x != root && x->color == BLACK)
 	{
 		if (x == x->parent->left) //x left kid
 		{
@@ -406,17 +392,18 @@ void Red_Black_Tree::deletion_fix_up(struct Node* x, struct Node* y)
 	x->color = BLACK;
 }
 
-void Red_Black_Tree::print_tree(struct Node* node, struct Node* nill)
+void Red_Black_Tree::print_tree(Node* node, Node* nill)
 {
-	if (node != nill) {
-		if (node->right != nill) 
+	if (node != nill) 
+	{
+		if (node->right != nill)
 		{
-			if (node->color == BLACK) 
+			if (node->color == BLACK)
 			{
 				cout << "\033[90m" << node->data << "\033[0m";
 				cout << " -> right: ";
 			}
-			else if (node->color == RED) 
+			else if (node->color == RED)
 			{
 				cout << "\033[31m" << node->data << "\033[0m";
 				cout << " -> right: ";
@@ -425,13 +412,14 @@ void Red_Black_Tree::print_tree(struct Node* node, struct Node* nill)
 			{
 				cout << "\033[90m" << node->right->data << "\033[0m" << "\n";
 			}
-			else if (node->right->color == RED) 
+			else if (node->right->color == RED)
 			{
 				cout << "\033[31m" << node->right->data << "\033[0m" << "\n";
 			}
 			print_tree(node->right, nill);
 		}
-		if (node->left != nill) {
+		if (node->left != nill) 
+		{
 			if (node->color == BLACK)
 			{
 				cout << "\033[90m" << node->data << "\033[0m";
@@ -455,17 +443,30 @@ void Red_Black_Tree::print_tree(struct Node* node, struct Node* nill)
 	}
 }
 
+void Red_Black_Tree::generate(int* tab, int amount)
+{
+	int k = 1;
+	for (int i = 0; i < amount; i++)
+	{
+		*(tab + i) = k;
+		k++;
+	}
+	
+	/*unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	shuffle(tab, tab + amount, default_random_engine(seed));*/
+}
+
 void Red_Black_Tree::menu()
 {
 	int dane = 0;
 	int choice = 0;
 	nill = new Node();
-	nill_init(nill);
+	nill = nill_init(nill);
 	root = nill;
 
 	do
 	{
-		main_menu:
+	main_menu:
 		system("cls");
 		cout << "\033[95;1m--- MENU ---\033[0m" << "\n";
 		cout << "1) Insert node" << "\n";
@@ -477,16 +478,16 @@ void Red_Black_Tree::menu()
 		cin >> choice;
 		switch (choice)
 		{
-		case 1: 
+		case 1:
 			cout << "\033[95;1mWstawianie nowej danej\033[0m" << "\n";
 			cout << "Liczba: ";
 			cin >> dane;
-			cout<<"\n";
+			cout << "\n";
 			if ((temp = new Node()) != NULL)
 			{
 				if (insert_check(root, dane) == false)
 				{
-					temp_init(temp, dane);
+					temp = temp_init(temp, dane);
 					insert(root, nill, temp);
 				}
 				else
@@ -497,7 +498,7 @@ void Red_Black_Tree::menu()
 			}
 			system("pause");
 			break;
-		case 2: 
+		case 2:
 			cout << "\n";
 			cout << "ROOT: " << "\033[90;1m" << root->data << "\033[0m" << "\n";
 			print_tree(root, nill);
