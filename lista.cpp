@@ -1,4 +1,5 @@
-#include <iostream> //dostep do cin cout
+#include <iostream> //dostep dostd::cinstd::cout
+#include <chrono>
 using namespace std;
 
 // deklaracja elementu
@@ -30,7 +31,7 @@ class Lista
       {    
                                      // -> umożliwia dostęp do elementów w strukturach
         adres = poczatek->nastepny;  //zapamietanie adresu nastepnego elementu
-       delete poczatek;            //usuwanie tylko pierwszego elementu
+        delete poczatek;            //usuwanie tylko pierwszego elementu
         poczatek = adres;            //poczatek ma nowy adres
       }              
     }
@@ -140,16 +141,16 @@ class Lista
     void wyswietl()
     {
       Element * p;
-      if(!poczatek) cout <<endl<<endl<< "Lista jest pusta." << endl;
+      if(!poczatek)std::cout <<endl<<endl<< "Lista jest pusta." << endl;
       else
       {
         p = poczatek;
         while(p)
         {
-          cout << p->wartosc << " ";
+         std::cout << p->wartosc << " ";
           p = p->nastepny;
         }
-        cout << endl;
+       std::cout << endl;
       }
     }
 
@@ -180,20 +181,20 @@ void menu(Lista lista1, Element *p, int i)
   int ile;
   int ktory;
   int liczba;
-    cout << "               Menu:"<<endl<<"0 - Wyswietl liste"<<endl<<"1 - Dodaj element na poczatek"<<endl<<"2 - Dodaj element w srodku"<<endl<<"3 - Dodaj element na koniec"<<endl<<"4 - Usun element z poczatku"<<endl<<"5 - Usun element ze srodka"<<endl<<"6 - Usun element z konca"<<endl<<"7 - Wyszukaj element z listy"<<endl<<"8 - Usun wszystkie elementy"<<endl<<"9 - Wyjdz"<<endl<<endl;
-    cin >> liczba;
+   std::cout << "               Menu:"<<endl<<"0 - Wyswietl liste"<<endl<<"1 - Dodaj element na poczatek"<<endl<<"2 - Dodaj element w srodku"<<endl<<"3 - Dodaj element na koniec"<<endl<<"4 - Usun element z poczatku"<<endl<<"5 - Usun element ze srodka"<<endl<<"6 - Usun element z konca"<<endl<<"7 - Wyszukaj element z listy"<<endl<<"8 - Usun wszystkie elementy"<<endl<<"9 - Wyjdz"<<endl<<endl;
+   std::cin >> liczba;
     switch( liczba )
 {
   case 0:
    lista1.wyswietl();
-   cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+  std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
     menu(lista1, p, i);
    break;
 
    case 1:
 // tworzymy elementy dodając je na początek listy
-  cout<<endl<<"ile elementow chcesz dodac na poczatek listy"<<endl;
-  cin>>ile;
+ std::cout<<endl<<"ile elementow chcesz dodac na poczatek listy"<<endl;
+ std::cin>>ile;
   for(i = 1; i <= ile; i++)
   {
     p = new Element;
@@ -201,34 +202,49 @@ void menu(Lista lista1, Element *p, int i)
     lista1.dodaj_poczatek(p);
   }
 
-  cout << "Lista:  ";   lista1.wyswietl();
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+  //cout << "Lista:  ";   lista1.wyswietl();
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
     menu(lista1, p, i);
   break;
 
   case 3:
 // tworzymy elementy dodając je na koniec listy
-  cout<<endl<<"ile elementow chcesz dodac na poczatek listy"<<endl;
-  cin>>ile;
+ {std::cout<<endl<<"ile elementow chcesz dodac na koniec listy"<<endl;
+ std::cin>>ile;
+  auto start = std::chrono::high_resolution_clock::now();
   for(i = 1; i <= ile; i++)
   {
     p = new Element;
     p->wartosc = i;
     lista1.dodaj_koniec(p);
   }
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+  std::cout << "Czas wykonania dla n = " << ile << " wynosi: " << duration.count() << " mikrosekundy" << std::endl;
 
-  cout << "Lista:   ";   lista1.wyswietl();
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
-    menu(lista1, p, i);
+  //cout << "Lista:   ";   lista1.wyswietl();
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+    menu(lista1, p, i);}
   break;
 
 case 4:
 // usuwamy pierwszy element listy
-  lista1.usun_poczatek();
-  
-  cout << "Lista:   ";   lista1.wyswietl();
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
-    menu(lista1, p, i);
+ {std::cout<<endl<<"ile elementow chcesz usunac z listy"<<endl;
+ std::cin>>ile;
+  auto start = std::chrono::high_resolution_clock::now();
+  for(i = 1; i <= ile; i++)
+  {
+    p = new Element;
+    p->wartosc = i;
+     lista1.usun_poczatek();
+  }
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+  std::cout << "Czas wykonania dla n = " << ile << " wynosi: " << duration.count() << " mikrosekundy" << std::endl;
+
+  //cout << "Lista:   ";   lista1.wyswietl();
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+    menu(lista1, p, i);}
   break;
 
   case 6:
@@ -236,75 +252,79 @@ case 4:
 
   lista1.usun_koniec();
   
-  cout << "Lista:  ";   lista1.wyswietl();
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+  //cout << "Lista:  ";   lista1.wyswietl();
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
     menu(lista1, p, i);
   break;
  
  case 5:
 // usuwamy element z listy
-cout<<endl<<"Ktory element chcesz usunac"<<endl;
+std::cout<<endl<<"Ktory element chcesz usunac"<<endl;
 cin>>ktory;
   delete lista1.usun_srodek(lista1.miejsce(ktory));
   
-  cout << "Lista:  ";   lista1.wyswietl();
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+  //cout << "Lista:  ";   lista1.wyswietl();
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
     menu(lista1, p, i);
   break;
 
   case 2:
 // Za elementem listy wstawiamy nowy element
-  cout<<endl<<"Za ktorym elementem chcesz dodac nowy"<<endl;
-  cin>>ktory;
-  cout<<endl<<"jaka wartosc ma miec element: "<<endl;
-  cin>>ile;
+ std::cout<<endl<<"Za ktorym elementem chcesz dodac nowy"<<endl;
+ std::cin>>ktory;
+ std::cout<<endl<<"jaka wartosc ma miec element: "<<endl;
+ std::cin>>ile;
   p = new Element;
   p->wartosc=ile;
   lista1.dodaj_srodek(p,lista1.miejsce(ktory));
   
-  cout << "Lista:  ";   lista1.wyswietl();
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+  //cout << "Lista:  ";   lista1.wyswietl();
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
     menu(lista1, p, i);
   break;
 
 case 8:
 // usuwamy wszystkie elementy z listy
+  {auto start = std::chrono::high_resolution_clock::now();
   while(lista1.licznik) lista1.usun_poczatek();
-  lista1.wyswietl();
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
-  menu(lista1, p, i);
+  //lista1.wyswietl();
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+  std::cout << "Czas wykonania dla wszystkich elementow wynosi: " << duration.count() << " mikrosekundy" << std::endl;
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+  menu(lista1, p, i);}
   break;
 
 case 7:
 // wyszukujemy element z listy
-cout<<endl<<"Ktory element z listy chcesz wyszukac"<<endl;
-cin>>ktory;
+std::cout<<endl<<"Ktory element z listy chcesz wyszukac"<<endl;
+std::cin>>ktory;
 if(ktory>lista1.licznik)
 {
-  cout<<endl<<"Nie ma takiego elementu na liscie"<<endl<<"Na liscie znajduje sie "<<lista1.licznik<<" elementow, zobacz dostepne opcje na liscie: "<<endl<<endl;
-  cout<<"Lista: ";
-  lista1.wyswietl();
+ std::cout<<endl<<"Nie ma takiego elementu na liscie"<<endl<<"Na liscie znajduje sie "<<lista1.licznik<<" elementow, zobacz dostepne opcje na liscie: "<<endl<<endl;
+  //cout<<"Lista: ";
+  //lista1.wyswietl();
 }
 else
 {
   lista1.na_poczatek(lista1.miejsce(ktory));
-  cout << "Lista:  ";   lista1.wyswietl();
+  //cout << "Lista:  ";   lista1.wyswietl();
 }
-  cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
+ std::cout<<endl<<"Potrzebujesz cos jeszcze?"<<endl;
     menu(lista1, p, i);
   break;
 
   case 9:
-  cout<<"Koniec"<<endl;
+ std::cout<<"Koniec"<<endl;
   break;
 
   default:
-        cout<<endl<<"Ups, cos poszlo nie tak, sprobuj ponownie "<<endl;
+       std::cout<<endl<<"Ups, cos poszlo nie tak, sprobuj ponownie "<<endl;
          menu(lista1, p, i);
         break;
 }
   
-  cout << endl; 
+ std::cout << endl; 
 
 }
 
